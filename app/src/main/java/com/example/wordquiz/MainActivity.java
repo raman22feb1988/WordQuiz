@@ -145,20 +145,20 @@ public class MainActivity extends AppCompatActivity {
             Arrays.sort(c);
             String anagram = new String(c);
             String definition = entry.getValue();
-            StringBuilder front = new StringBuilder();
             StringBuilder back = new StringBuilder();
+            StringBuilder front = new StringBuilder();
             for(char letter = 'A'; letter <= 'Z'; letter++)
             {
                 if(dictionary.containsKey(word + letter))
                 {
-                    front.append(letter);
+                    back.append(letter);
                 }
                 if(dictionary.containsKey(letter + word))
                 {
-                    back.append(letter);
+                    front.append(letter);
                 }
             }
-            boolean q = db.insertWord(word, word.length(), anagram, definition, probability(word), new String(front), new String(back));
+            boolean q = db.insertWord(word, word.length(), anagram, definition, probability(word), new String(back), new String(front));
         }
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences("AppData", 0);
@@ -322,15 +322,15 @@ public class MainActivity extends AppCompatActivity {
                     db.updateTime(guesses, time, 1);
                     ArrayList<String> hook = db.getDefinition(guess);
                     String meaning = hook.get(0);
-                    String front = hook.get(1);
-                    String back = hook.get(2);
+                    String back = hook.get(1);
+                    String front = hook.get(2);
                     if(solved.size() == 0)
                     {
-                        amount[0] += ("<b><small>" + back + "</small> " + guess + " <small>" + front + "</small></b> " + meaning);
+                        amount[0] += ("<b><small>" + front + "</small> " + guess + " <small>" + back + "</small></b> " + meaning);
                     }
                     else
                     {
-                        amount[0] += ("<br><b><small>" + back + "</small> " + guess + " <small>" + front + "</small></b> " + meaning);
+                        amount[0] += ("<br><b><small>" + front + "</small> " + guess + " <small>" + back + "</small></b> " + meaning);
                     }
                     t5.setText(Html.fromHtml(amount[0]));
                     answers.remove(guess);
