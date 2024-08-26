@@ -1,10 +1,15 @@
 package com.example.wordquiz;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -308,6 +313,24 @@ public class sqliteDB extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         return Integer.parseInt(data);
+    }
+
+    public void alertBox(String title, String message, Context location)
+    {
+        LayoutInflater inflater = LayoutInflater.from(location);
+        final View yourCustomView = inflater.inflate(R.layout.display, null);
+
+        TextView t1 = yourCustomView.findViewById(R.id.textview8);
+        t1.setText(message);
+
+        AlertDialog dialog = new AlertDialog.Builder(location)
+            .setTitle(title)
+            .setView(yourCustomView)
+            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int whichButton) {
+                }
+            }).create();
+        dialog.show();
     }
 
     public static void main(String[] args) {

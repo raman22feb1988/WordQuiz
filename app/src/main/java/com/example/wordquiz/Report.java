@@ -26,6 +26,7 @@ public class Report extends AppCompatActivity {
     Button b2;
     Button b3;
     Button b4;
+    Button b5;
 
     ArrayList<String> anagrams;
     int words;
@@ -42,6 +43,7 @@ public class Report extends AppCompatActivity {
         b2 = findViewById(R.id.button7);
         b3 = findViewById(R.id.button8);
         b4 = findViewById(R.id.button9);
+        b5 = findViewById(R.id.button17);
 
         db = new sqliteDB(Report.this);
 
@@ -61,13 +63,15 @@ public class Report extends AppCompatActivity {
         final View yourCustomView = inflater.inflate(R.layout.input, null);
 
         EditText e1 = yourCustomView.findViewById(R.id.edittext1);
+        e1.setHint("Enter a value between 2 and 15");
 
         AlertDialog dialog = new AlertDialog.Builder(Report.this)
                 .setTitle("Word length")
                 .setView(yourCustomView)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        letters = Integer.parseInt((e1.getText()).toString());
+                        String alphabet = (e1.getText()).toString();
+                        letters = alphabet.length() == 0 ? 0 : Integer.parseInt(alphabet);
                         if(letters < 2 || letters > 15)
                         {
                             Toast.makeText(Report.this, "Enter a value between 2 and 15", Toast.LENGTH_LONG).show();
@@ -95,6 +99,7 @@ public class Report extends AppCompatActivity {
     {
         b1.setEnabled(true);
         b2.setEnabled(true);
+        b5.setEnabled(true);
 
         if(words > 0) {
             t1.setText("Page " + (counter + 1) + " out of " + (((words - 1) / 100) + 1));
@@ -165,6 +170,41 @@ public class Report extends AppCompatActivity {
                 Intent intent2 = new Intent(Report.this, MainActivity.class);
                 startActivity(intent2);
                 finish();
+            }
+        });
+
+        b5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater inflater = LayoutInflater.from(Report.this);
+                final View yourCustomView = inflater.inflate(R.layout.input, null);
+
+                EditText e2 = yourCustomView.findViewById(R.id.edittext1);
+                int maximum = ((words - 1) / 100) + 1;
+                e2.setHint("Enter a value between 1 and " + maximum);
+
+                AlertDialog dialog = new AlertDialog.Builder(Report.this)
+                        .setTitle("Go to page")
+                        .setView(yourCustomView)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                String pages = (e2.getText()).toString();
+                                int page = pages.length() == 0 ? 0 : Integer.parseInt(pages);
+                                if(page < 1 || page > maximum)
+                                {
+                                    Toast.makeText(Report.this, "Enter a value between 1 and " + maximum, Toast.LENGTH_LONG).show();
+                                }
+                                else
+                                {
+                                    if(words > 100) {
+                                        counter = page - 1;
+                                        db.updatePage(letters, counter);
+                                        nextWord();
+                                    }
+                                }
+                            }
+                        }).create();
+                dialog.show();
             }
         });
     }

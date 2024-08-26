@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
     Button b9;
     Button b10;
     Button b11;
+    Button b12;
+    Button b13;
 
     ArrayList<String> anagrams;
     HashMap<String, Boolean> solvedStatus;
@@ -81,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
         b9 = findViewById(R.id.button12);
         b10 = findViewById(R.id.button14);
         b11 = findViewById(R.id.button15);
+        b12 = findViewById(R.id.button16);
+        b13 = findViewById(R.id.button18);
 
         db = new sqliteDB(MainActivity.this);
 
@@ -90,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         if(prepared) {
             getWordLength();
         } else {
-            Toast.makeText(MainActivity.this, "Please give some time to prepare database of dictionary words only when opening this for the first time", Toast.LENGTH_LONG).show();
+            db.alertBox("Database initialization", "Please give 1 hour to prepare database of dictionary words. Only when opening this for the first time.", MainActivity.this);
             db.prepareScore();
             prepareDictionary();
         }
@@ -175,13 +179,15 @@ public class MainActivity extends AppCompatActivity {
         final View yourCustomView = inflater.inflate(R.layout.input, null);
 
         EditText e1 = yourCustomView.findViewById(R.id.edittext1);
+        e1.setHint("Enter a value between 2 and 15");
 
         AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
                 .setTitle("Word length")
                 .setView(yourCustomView)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        letters = Integer.parseInt((e1.getText()).toString());
+                        String alphabet = (e1.getText()).toString();
+                        letters = alphabet.length() == 0 ? 0 : Integer.parseInt(alphabet);
                         if(letters < 2 || letters > 15)
                         {
                             Toast.makeText(MainActivity.this, "Enter a value between 2 and 15", Toast.LENGTH_LONG).show();
@@ -202,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
         final View yourCustomView = inflater.inflate(R.layout.input, null);
 
         EditText e1 = yourCustomView.findViewById(R.id.edittext1);
+        e1.setHint("Enter a value between 2 and 15");
 
         AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
                 .setTitle("Word length")
@@ -257,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
         b9.setEnabled(true);
         b10.setEnabled(true);
         b11.setEnabled(true);
+        b12.setEnabled(true);
 
         t1.setText("Word " + (counter + 1) + " out of " + words);
         t2.setText("Number of answers: " + total);
@@ -297,11 +305,11 @@ public class MainActivity extends AppCompatActivity {
 
             if(k == 0)
             {
-                amount[0] += ("<b><small>" + behind + "</small> " + sum + " <small>" + ahead + "</small></b> " + overall);
+                amount[0] += ((k + 1) + ". <b><small>" + behind + "</small> " + sum + " <small>" + ahead + "</small></b> " + overall);
             }
             else
             {
-                amount[0] += ("<br><b><small>" + behind + "</small> " + sum + " <small>" + ahead + "</small></b> " + overall);
+                amount[0] += ("<br>" + (k + 1) + ". <b><small>" + behind + "</small> " + sum + " <small>" + ahead + "</small></b> " + overall);
             }
 
             t5.setText(Html.fromHtml(amount[0]));
@@ -326,11 +334,11 @@ public class MainActivity extends AppCompatActivity {
                     String front = hook.get(2);
                     if(solved.size() == 0)
                     {
-                        amount[0] += ("<b><small>" + front + "</small> " + guess + " <small>" + back + "</small></b> " + meaning);
+                        amount[0] += ((solved.size() + 1) + ". <b><small>" + front + "</small> " + guess + " <small>" + back + "</small></b> " + meaning);
                     }
                     else
                     {
-                        amount[0] += ("<br><b><small>" + front + "</small> " + guess + " <small>" + back + "</small></b> " + meaning);
+                        amount[0] += ("<br>" + (solved.size() + 1) + ". <b><small>" + front + "</small> " + guess + " <small>" + back + "</small></b> " + meaning);
                     }
                     t5.setText(Html.fromHtml(amount[0]));
                     answers.remove(guess);
@@ -459,6 +467,46 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        b12.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+                final View yourCustomView = inflater.inflate(R.layout.input, null);
+
+                EditText e3 = yourCustomView.findViewById(R.id.edittext1);
+                e3.setHint("Enter a value between 1 and " + words);
+
+                AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                    .setTitle("Go to page")
+                    .setView(yourCustomView)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            String pages = (e3.getText()).toString();
+                            int page = pages.length() == 0 ? 0 : Integer.parseInt(pages);
+                            if(page < 1 || page > words)
+                            {
+                                Toast.makeText(MainActivity.this, "Enter a value between 1 and " + words, Toast.LENGTH_LONG).show();
+                            }
+                            else
+                            {
+                                counter = page - 1;
+                                db.updateCounter(letters, counter);
+                                cumulativeTime(begin, delay[0], answers);
+                                nextWord();
+                            }
+                        }
+                    }).create();
+                dialog.show();
+            }
+        });
+
+        b13.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                e2.setText("");
+            }
+        });
     }
 
     public void cumulativeTime(long begin, double delay, ArrayList<String> answers)
@@ -472,7 +520,7 @@ public class MainActivity extends AppCompatActivity {
 
     public double probability(String st)
     {
-        int frequency[] = new int[]{9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1};
+        int frequency[] = new int[] {9, 2, 2, 4, 12, 2, 3, 2, 9, 1, 1, 4, 2, 6, 8, 2, 1, 6, 4, 6, 4, 2, 2, 1, 2, 1};
         int count = 100;
         double chance = 1;
         for(int j = 0; j < st.length(); j++)
