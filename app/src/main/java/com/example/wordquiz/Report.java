@@ -54,6 +54,15 @@ public class Report extends AppCompatActivity {
             }
         });
 
+        b4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent2 = new Intent(Report.this, MainActivity.class);
+                startActivity(intent2);
+                finish();
+            }
+        });
+
         getWordLength();
     }
 
@@ -154,22 +163,6 @@ public class Report extends AppCompatActivity {
                     db.updatePage(letters, counter);
                     nextWord();
                 }
-            }
-        });
-
-        b3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getWordLength();
-            }
-        });
-
-        b4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent2 = new Intent(Report.this, MainActivity.class);
-                startActivity(intent2);
-                finish();
             }
         });
 
