@@ -105,6 +105,37 @@ public class MainActivity extends AppCompatActivity {
                 getWordLength();
             }
         });
+
+        b5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(MainActivity.this, Report.class);
+                startActivity(intent1);
+                finish();
+            }
+        });
+
+        b8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                show = !show;
+                if(show)
+                {
+                    b8.setText("Keep Hiding Answers");
+                }
+                else
+                {
+                    b8.setText("Keep Showing Answers");
+                }
+            }
+        });
+
+        b13.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                e2.setText("");
+            }
+        });
     }
 
     public void prepareDictionary()
@@ -275,23 +306,6 @@ public class MainActivity extends AppCompatActivity {
             t9.setText(replies.toString());
         }
         e2.setText("");
-
-        b8.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                show = !show;
-                if(show)
-                {
-                    b8.setText("Keep Hiding Answers");
-                    t9.setText(replies.toString());
-                }
-                else
-                {
-                    b8.setText("Keep Showing Answers");
-                    t9.setText("");
-                }
-            }
-        });
 
         final String[] amount = {new String()};
 
@@ -478,33 +492,26 @@ public class MainActivity extends AppCompatActivity {
                 e3.setHint("Enter a value between 1 and " + words);
 
                 AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-                    .setTitle("Go to page")
-                    .setView(yourCustomView)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            String pages = (e3.getText()).toString();
-                            int page = pages.length() == 0 ? 0 : Integer.parseInt(pages);
-                            if(page < 1 || page > words)
-                            {
-                                Toast.makeText(MainActivity.this, "Enter a value between 1 and " + words, Toast.LENGTH_LONG).show();
+                        .setTitle("Go to page")
+                        .setView(yourCustomView)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                String pages = (e3.getText()).toString();
+                                int page = pages.length() == 0 ? 0 : Integer.parseInt(pages);
+                                if(page < 1 || page > words)
+                                {
+                                    Toast.makeText(MainActivity.this, "Enter a value between 1 and " + words, Toast.LENGTH_LONG).show();
+                                }
+                                else
+                                {
+                                    counter = page - 1;
+                                    db.updateCounter(letters, counter);
+                                    cumulativeTime(begin, delay[0], answers);
+                                    nextWord();
+                                }
                             }
-                            else
-                            {
-                                counter = page - 1;
-                                db.updateCounter(letters, counter);
-                                cumulativeTime(begin, delay[0], answers);
-                                nextWord();
-                            }
-                        }
-                    }).create();
+                        }).create();
                 dialog.show();
-            }
-        });
-
-        b13.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                e2.setText("");
             }
         });
     }
