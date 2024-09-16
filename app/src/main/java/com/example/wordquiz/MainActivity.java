@@ -51,6 +51,10 @@ public class MainActivity extends AppCompatActivity {
     Button b11;
     Button b12;
     Button b13;
+    Button b14;
+    Button b15;
+    Button b16;
+    Button b17;
 
     ArrayList<String> anagrams;
     HashMap<String, Boolean> solvedStatus;
@@ -85,6 +89,10 @@ public class MainActivity extends AppCompatActivity {
         b11 = findViewById(R.id.button15);
         b12 = findViewById(R.id.button16);
         b13 = findViewById(R.id.button18);
+        b14 = findViewById(R.id.button19);
+        b15 = findViewById(R.id.button20);
+        b16 = findViewById(R.id.button21);
+        b17 = findViewById(R.id.button22);
 
         db = new sqliteDB(MainActivity.this);
 
@@ -134,6 +142,34 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 e2.setText("");
+            }
+        });
+
+        b14.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                db.exportLabels(MainActivity.this);
+            }
+        });
+
+        b15.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                db.importLabels(MainActivity.this);
+            }
+        });
+
+        b16.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                db.exportDB(MainActivity.this);
+            }
+        });
+
+        b17.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                db.importDB(MainActivity.this);
             }
         });
     }
